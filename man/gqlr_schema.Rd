@@ -9,46 +9,66 @@ gqlr_schema(schema, ...)
 \arguments{
 \item{schema}{GraphQL schema string or Schema object}
 
-\item{...}{named lists of information to help produce the schema definition.  See Details}
+\item{...}{named lists of information to help produce the schema definition.
+See Details}
 }
 \description{
-Creates a Schema object from the defined GraphQL string and inserts the provided descriptions, resolve methods, resolve_type methods into the appropriate place.
+Creates a Schema object from the defined GraphQL string and
+  inserts the provided descriptions, resolve methods, resolve_type methods
+  into the appropriate place.
 }
 \section{Details}{
+ The ... should be named arguments whose values are lists of
+  information.  What information is needed for each type is described below.
 
-The ... should be named arguments whose values are lists of information.  What information is needed for each type is described below.
+  ScalarTypeDefinition: \describe{ \item{resolve}{function with two
+  parameters: \code{x} (the raw to be parsed, such as 5.0) and \code{schema}
+  (the full Schema definition). Should return a parsed value}
+  \item{description}{(optional) single character value that describes the
+  Scalar definition} \item{parse_ast}{(optional) function with two
+  parameters: \code{obj} (a GraphQL wrapped raw value, such as an object of
+  class IntValue with value 5) and \code{schema} (the full Schema
+  definition).  If the function returns \code{NULL} then the AST could not be
+  parsed.} }
 
-ScalarTypeDefinition:
-\describe{
-  \item{resolve}{function with two parameters: \code{x} (the raw to be parsed, such as 5.0) and \code{schema} (the full Schema definition). Should return a parsed value}
-  \item{description}{(optional) single character value that describes the Scalar definition}
-  \item{parse_ast}{(optional) function with two parameters: \code{obj} (a GraphQL wrapped raw value, such as an object of class IntValue with value 5) and \code{schema} (the full Schema definition).  If the function returns \code{NULL} then the AST could not be parsed.}
-}
+  EnumTypeDefinition: \describe{ \item{resolve}{(optional) function with two
+  parameters: \code{x} and \code{schema} (the full Schema definition). Should
+  return the value \code{x} represents, such as the Star Wars Episode enum
+  value "4" could represent Episode "NEWHOPE". By default,
+  EnumTypeDefinitions will return the current value.}
+  \item{description}{(optional) single character value that describes the
+  Enum definition} \item{values}{(optional) named list of enum value
+  descriptions. Such as \code{values = list(ENUMA = "description for ENUMA",
+  ENUMZ = "description for ENUMZ")}} }
 
-EnumTypeDefinition:
-\describe{
-  \item{resolve}{(optional) function with two parameters: \code{x} and \code{schema} (the full Schema definition). Should return the value \code{x} represents, such as the Star Wars Episode enum value "4" could represent Episode "NEWHOPE". By default, EnumTypeDefinitions will return the current value.}
-  \item{description}{(optional) single character value that describes the Enum definition}
-  \item{values}{(optional) named list of enum value descriptions. Such as \code{values = list(ENUMA = "description for ENUMA", ENUMZ = "description for ENUMZ")}}
-}
+  ObjectTypeDefinition: \describe{ \item{resolve}{function with two
+  parameters: \code{x} (place holder value to be expanded into a named list)
+  and \code{schema} (the full Schema definition). By using the resolve
+  method, recursive relationships, such as friends, can easily be handled.
+  The resolve function should return a fully named list of all the fields the
+  definition defines.  Missing fields are automatically interpreted as
+  \code{NULL}.
 
-ObjectTypeDefinition:
-\describe{
-  \item{resolve}{function with two parameters: \code{x} (place holder value to be expanded into a named list) and \code{schema} (the full Schema definition). By using the resolve method, recursive relationships, such as friends, can easily be handled.  The resolve function should return a fully named list of all the fields the definition defines.  Missing fields are automatically interpreted as \code{NULL}.
+  Values in the returned list may be a function of the form
+  \code{function(obj, args, schema) {...}}.  This allows for fields to be
+  determined dynamically and lazily. See how \code{add_human} makes a field
+  for \code{totalCredits}, while the \code{add_droid} pre computes the
+  information.} \item{description}{(optional) single character value that
+  describes the object} \item{fields}{(optional) named list of field
+  descriptions. Such as \code{fields = list(fieldA = "description for field
+  A", fieldB = "description for field B")}} }
 
-  Values in the returned list may be a function of the form \code{function(obj, args, schema){...}}.  This allows for fields to be determined dynamically and lazily. See how \code{add_human} makes a field for \code{totalCredits}, while the \code{add_droid} pre computes the information.}
-  \item{description}{(optional) single character value that describes the object}
-  \item{fields}{(optional) named list of field descriptions. Such as \code{fields = list(fieldA = "description for field A", fieldB = "description for field B")}}
-}
-
-InterfaceTypeDefinition and UnionTypeDefinition:
-\describe{
-  \item{resolve_type}{function with two parameters: \code{x} (a pre-resolved object value) and \code{schema} (the full Schema definition). This function is required to determine which object type is being used. \code{resolve_type} is called before any ObjectTypeDefinition \code{resolve} methods are called.}
-  \item{description}{(optional) single character value that describes the object}
-}
+  InterfaceTypeDefinition and UnionTypeDefinition: \describe{
+  \item{resolve_type}{function with two parameters: \code{x} (a pre-resolved
+  object value) and \code{schema} (the full Schema definition). This function
+  is required to determine which object type is being used.
+  \code{resolve_type} is called before any ObjectTypeDefinition
+  \code{resolve} methods are called.} \item{description}{(optional) single
+  character value that describes the object} }
 }
 
 \examples{
+\donttest{
 library(magrittr)
 
 ## Set up data
@@ -129,7 +149,7 @@ interface Character {
   ) ->
 character_schema
 # print the Character schema with no extra formatting
-character_schema$get_schema() \%>\% format() \%>\% cat("\\n")
+character_schema$get_schema() \%>\% format() \%>\% cat("\n")
 star_wars_schema$add(character_schema)
 
 
@@ -189,9 +209,9 @@ schema {
         hero = function(obj, args, schema) {
           episode <- args$episode
           if (identical(episode, 5) || identical(episode, "EMPIRE")) {
-            luke$id
+            "1000" # Luke Skywalker
           } else {
-            artoo$id
+            "2001" # R2-D2
           }
         },
         # the id will be resolved by the Human resolve() method
@@ -207,10 +227,11 @@ schema {
   ) ->
 schema_def
 # print Schema with no extra formatting
-schema_def$get_schema() \%>\% format() \%>\% cat("\\n")
+schema_def$get_schema() \%>\% format() \%>\% cat("\n")
 star_wars_schema$add(schema_def)
 
 
 # view the final schema definitiion
 star_wars_schema$get_schema()
+}
 }

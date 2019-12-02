@@ -6,7 +6,7 @@ str_trim <- function(x) {
   x
 }
 
-str_c <- function (..., sep = "", collapse = NULL) {
+str_c <- function(..., sep = "", collapse = NULL) {
   paste(..., sep = sep, collapse = collapse)
 }
 
@@ -51,4 +51,22 @@ unenclose_a_to_b <- function(env, ls_env = ls(envir = env)) {
     }
     x
   }
+}
+
+# lazy eval all definitions to avoid storing all R6 objs in pkg at build time
+# message("init queue")
+gqlr_env <- environment()
+gqlr_env$onload_queue <- list()
+for_onload <- function(fn) {
+  # message("adding fn to queue")
+  gqlr_env$onload_queue <<- c(gqlr_env$onload_queue, fn)
+}
+
+
+for_onload_eval <- function() {
+  # message("running onload")
+  # lazy eval all definitions to avoid storing all R6 objs in pkg at build time
+  lapply(gqlr_env$onload_queue, function(fn) {
+    eval(body(fn), envir = gqlr_env)
+  })
 }

@@ -4,7 +4,7 @@
 context("validation-5.1-operations")
 
 
-source("validate_helper.R")
+source(testthat::test_path("validate_helper.R"))
 
 
 test_that("5.1.1.1 - Operation Name Uniqueness", {
@@ -96,6 +96,7 @@ test_that("5.1.2.1 - Lone Anonymous Operation", {
     expect_error({
         graphql2obj(query)
       },
+      class = "error",
       ...
     )
   }

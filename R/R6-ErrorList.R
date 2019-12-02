@@ -47,11 +47,13 @@ NULL
 
 
 
-#' @export
+#' @export ErrorList
+for_onload(function() {
+
 ErrorList <- R6Class("ErrorList",
   private = list(
     # nolint start
-    # http://facebook.github.io/graphql/
+    # https://graphql.github.io/graphql-spec/October2016/
     # document.querySelectorAll( "#sec-Validation section" ).forEach(
     #  function(x,i){console.log(x.firstChild.innerText)}
     # )
@@ -178,7 +180,7 @@ ErrorList <- R6Class("ErrorList",
           nchar(lines[loc$start$line])
         )
         middle_lines <- ""
-        if ( (loc$start$line + 1) < loc$end$line) {
+        if ((loc$start$line + 1) < loc$end$line) {
           middle_lines <- lines[(loc$start$line + 1):(loc$end$line - 1)]
           middle_lines <- str_c(str_c(middle_lines, collapse = "\n"), "\n")
         }
@@ -240,6 +242,9 @@ ErrorList <- R6Class("ErrorList",
     }
   )
 )
+
+}) # end for_onload
+
 format.ErrorList <- function(x, ...) {
   x$.format(...)
 }

@@ -1,15 +1,15 @@
 #  gqlr: A GraphQL Implementation in R
 [![Travis-CI Build Status](https://travis-ci.org/schloerke/gqlr.svg?branch=master)](https://travis-ci.org/schloerke/gqlr)
-[![Coverage Status](https://codecov.io/github/schloerke/gqlr/coverage.svg?branch=master)](https://codecov.io/github/schloerke/gqlr?branch=master)
+<!-- [![Coverage Status](https://codecov.io/github/schloerke/gqlr/coverage.svg?branch=master)](https://codecov.io/github/schloerke/gqlr?branch=master) -->
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/gqlr)](https://cran.r-project.org/package=gqlr)
 
 
 
 ## Overview
 
-GraphQL is a data "query language created by Facebook in 2015 for describing the capabilities and requirements of data models for client‐server applications".  The [GraphQL specification can be read on their hosted github](http://facebook.github.io/graphql/). A [cliff notes version is described on Facebook's github](https://github.com/facebook/graphql). To learn more about the GraphQL language, I highly recommend [Facebook's public GraphQL website](http://graphql.org/learn/).
+GraphQL is a data "query language created by Facebook in 2015 for describing the capabilities and requirements of data models for client‐server applications".  The [GraphQL specification can be read on their hosted GitHub](https://graphql.github.io/graphql-spec/). A [cliff notes version is described on GraphQL's GitHub](https://github.com/graphql/graphql-spec). To learn more about the GraphQL language, I highly recommend [GraphQL's website](http://graphql.org/learn/).
 
-This package pulls inspiration from [Facebook's graphql-js](https://github.com/graphql/graphql-js) and [Mathew Mueller's graph.ql](https://github.com/matthewmueller/graph.ql). I wanted the full functionality of GraphQL, but I didn't want to force users to write full object definitions when can already be defined with GraphQL syntax.
+This package pulls inspiration from [graphql-js](https://github.com/graphql/graphql-js) and [Mathew Mueller's graph.ql](https://github.com/matthewmueller/graph.ql). I wanted the full functionality of GraphQL, but I didn't want to force users to write full object definitions when can already be defined with GraphQL syntax.
 
 `gqlr` merges R's rapid development speed with the consistent query language of GraphQL.
 
@@ -22,7 +22,7 @@ This package pulls inspiration from [Facebook's graphql-js](https://github.com/g
 devtools::install_github("schloerke/gqlr")
 ```
 
-If you encounter a clear bug, please file a minimal reproducible example on [github](https://github.com/schloerke/gqlr/issues).
+If you encounter a clear bug, please file a minimal reproducible example on [GitHub](https://github.com/schloerke/gqlr/issues).
 
 
 ## Usage
@@ -308,7 +308,7 @@ query IntrospectionTypeQuery {
 #### Star Wars Server
 ```r
 # R
-server(star_wars_schema, log = TRUE)
+gqlr:::server(star_wars_schema, log = TRUE) # forgot to export
 ```
 
 Explore with `curl`

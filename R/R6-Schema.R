@@ -67,8 +67,7 @@
 #' \code{$is_valid}: boolean that determines if a Schema object has been validated.  All Schema objects are validated at the time of request execution.  The Schema will remain valid until new definitions are added.
 #' @importFrom R6 R6Class
 #' @name Schema
-#' @examples
-#' example(gqlr_schema)
+#' @seealso \code{\link{gqlr_schema}}
 #'
 NULL
 # nolint end
@@ -84,9 +83,8 @@ NULL
 
 
 
-
-
-completed_introspection <- FALSE
+#' @include AAA-utils.R
+gqlr_env$completed_introspection <- FALSE
 
 
 is_object_interface_or_union <- function(name, schema) {
@@ -158,7 +156,9 @@ get_object_interface_or_union <- function(name_obj, schema) {
 
 
 
-#' @export
+#' @export Schema
+for_onload(function() {
+
 Schema <- R6Class(
   "Schema",
   private = list(
@@ -332,7 +332,7 @@ Schema <- R6Class(
       private$add_item(SkipDirective)
       private$add_item(IncludeDirective)
 
-      if (completed_introspection) {
+      if (isTRUE(gqlr_env$completed_introspection)) {
         private$add_item(Introspection__Schema)
         private$add_item(Introspection__Type)
         private$add_item(Introspection__Field)
@@ -462,3 +462,6 @@ Schema <- R6Class(
 
   )
 )
+
+
+}) # end for_onload
