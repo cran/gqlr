@@ -1,13 +1,16 @@
 #  gqlr: A GraphQL Implementation in R
-[![Travis-CI Build Status](https://travis-ci.org/schloerke/gqlr.svg?branch=master)](https://travis-ci.org/schloerke/gqlr)
-<!-- [![Coverage Status](https://codecov.io/github/schloerke/gqlr/coverage.svg?branch=master)](https://codecov.io/github/schloerke/gqlr?branch=master) -->
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/gqlr)](https://cran.r-project.org/package=gqlr)
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/schloerke/gqlr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/schloerke/gqlr/actions/workflows/R-CMD-check.yaml)
+[![Coverage Status](https://codecov.io/github/schloerke/gqlr/coverage.svg?branch=main)](https://app.codecov.io/github/schloerke/gqlr?branch=main)
+[![CRAN status](https://www.r-pkg.org/badges/version/gqlr)](https://CRAN.R-project.org/package=gqlr)
+[![CRAN Downloads](https://cranlogs.r-pkg.org/badges/gqlr)](https://cran.r-project.org/package=gqlr)
+<!-- badges: end -->
 
 
 
 ## Overview
 
-GraphQL is a data "query language created by Facebook in 2015 for describing the capabilities and requirements of data models for client‐server applications".  The [GraphQL specification can be read on their hosted GitHub](https://graphql.github.io/graphql-spec/). A [cliff notes version is described on GraphQL's GitHub](https://github.com/graphql/graphql-spec). To learn more about the GraphQL language, I highly recommend [GraphQL's website](http://graphql.org/learn/).
+GraphQL is a data "query language created by Facebook in 2015 for describing the capabilities and requirements of data models for client‐server applications".  The [GraphQL specification can be read on their hosted GitHub](http://spec.graphql.org/). A [cliff notes version is described on GraphQL's GitHub](http://spec.graphql.org/). To learn more about the GraphQL language, I highly recommend [GraphQL's website](https://graphql.org/learn/).
 
 This package pulls inspiration from [graphql-js](https://github.com/graphql/graphql-js) and [Mathew Mueller's graph.ql](https://github.com/matthewmueller/graph.ql). I wanted the full functionality of GraphQL, but I didn't want to force users to write full object definitions when can already be defined with GraphQL syntax.
 
@@ -29,7 +32,7 @@ If you encounter a clear bug, please file a minimal reproducible example on [Git
 
 ### Hello World
 
-```{r, message = FALSE}
+```r
 
 library(magrittr)
 library(gqlr)
@@ -391,3 +394,7 @@ curl '127.0.0.1:8000/'
 * [ghql](https://github.com/ropensci/ghql)
     * General purpose GraphQL client
     * The `ghql` client could be used to submit requests to `gqlr` server to be executed
+
+## Code of Conduct
+
+Please note that the gqlr project is released with a [Contributor Code of Conduct](http://schloerke.com/gqlr/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.

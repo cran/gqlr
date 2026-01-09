@@ -1,11 +1,6 @@
 # load_all(); testthat::test_file(file.path("tests", "testthat", "test-z-execute-simple.R")); # nolint
 
-context("execute-query-simple")
-
-source(testthat::test_path("validate_helper.R"))
-
 test_that("arbitrary code", {
-
   data <- list(
     a = "Apple",
     b = function(...) {
@@ -36,10 +31,10 @@ test_that("arbitrary code", {
 
   deepData <- list(
     a = function(...) {
-      return("Already Been Done");
+      return("Already Been Done")
     },
     b = function(...) {
-      return("Boring");
+      return("Boring")
     },
     c = function(...) {
       return(list("Contrived", NULL, "Confusing"))
@@ -49,15 +44,15 @@ test_that("arbitrary code", {
     }
   )
 
-# # nolint start
-# function promiseData() {
-#   return new Promise(resolve => {
-#     process.nextTick(() => {
-#       resolve(data);
-#     });
-#   });
-# }
-# # nolint end
+  # # nolint start
+  # function promiseData() {
+  #   return new Promise(resolve => {
+  #     process.nextTick(() => {
+  #       resolve(data);
+  #     });
+  #   });
+  # }
+  # # nolint end
 
   simple_query <- "
   query Example($size: Int) {
@@ -136,8 +131,7 @@ test_that("arbitrary code", {
     query: Data
   }
   " %>%
-    gqlr_schema() ->
-  schema
+    gqlr_schema() -> schema
 
   ans <- execute_request(
     simple_query,
@@ -150,7 +144,6 @@ test_that("arbitrary code", {
   expect_true(ans$error_list$has_no_errors())
   expect_true(!identical(ans$data$rando, ans$data$deep$deeper[[1]]$rando))
   expect_true(!identical(ans$data$rando, ans$data$deep$deeper[[3]]$rando))
-
 
   # remove rando
   query_doc_exact <- gsub(" rando", " ", simple_query)
@@ -165,12 +158,10 @@ test_that("arbitrary code", {
 
   expect_true(ans$error_list$has_no_errors())
   expect_equal(ans_exact$data, expected)
-
 })
 
 
 test_that("args", {
-
   "
   type MyObject {
     fieldA(argA: Int!): Int
@@ -181,8 +172,7 @@ test_that("args", {
     query: MyObject
   }
   " %>%
-    gqlr_schema() ->
-  schema
+    gqlr_schema() -> schema
 
   expected <- list(data = list(fieldC = 3))
 
@@ -192,7 +182,8 @@ test_that("args", {
       expect_equal(as.character(to_json(expected_val)))
   }
 
-  execute_request("
+  execute_request(
+    "
       {
         fieldC(argC: null)
       }
@@ -203,7 +194,8 @@ test_that("args", {
   ) %>%
     expect_expected()
 
-  execute_request("
+  execute_request(
+    "
       {
         fieldC(argC: 5)
       }
@@ -214,7 +206,8 @@ test_that("args", {
   ) %>%
     expect_expected()
 
-  execute_request("
+  execute_request(
+    "
       query args($argVal: Int) {
         fieldC(argC: $argVal)
       }
@@ -225,7 +218,8 @@ test_that("args", {
   ) %>%
     expect_expected()
 
-  execute_request("
+  execute_request(
+    "
       query args($argVal: Int) {
         fieldC(argC: $argVal)
       }
@@ -236,25 +230,28 @@ test_that("args", {
   ) %>%
     expect_expected()
 
-  execute_request("
+  execute_request(
+    "
       query arg($intVal: Int!) {
         fieldA(argA: $intVal)
       }
     ",
     schema,
     variables = list(intVal = "Barret"),
-    initial_value = list(fieldA = 1, fieldB = 2, fieldC = 3)
+    initial_value = list(fieldA = 1, fieldB = 2, fieldC = 3),
+    verbose_errors = FALSE
   ) %>%
     expect_expected(
-      list(data = NULL, errors = list(list(
-        message = "6.1.2: Coercing Variable Values
+      list(
+        data = NULL,
+        errors = list(list(
+          message = "6.1.2: Coercing Variable Values
 Value cannot be coerced according to the input coercion rules
 Location: 2:17 to 2:30
 Error String: '$intVal: Int!'"
-      )))
+        ))
+      )
     )
-
-
 })
 
 
@@ -271,5 +268,4 @@ test_that("Scalars", {
 
   expect_equal(coerce_string(5.4), "5.4")
   expect_equal(coerce_string("5.4"), "5.4")
-
 })

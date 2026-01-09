@@ -1,11 +1,4 @@
-
-context("validation-5.7-variables")
-
-
-source(testthat::test_path("validate_helper.R"))
-
 test_that("5.7.1 - Variable Uniqueness", {
-
   "
   query houseTrainedQuery($atOtherHomes: Boolean, $atOtherHomes: Boolean) {
     dog {
@@ -13,8 +6,7 @@ test_that("5.7.1 - Variable Uniqueness", {
     }
   }
   " %>%
-  expect_err("All defined variables must be unique")
-
+    expect_err("All defined variables must be unique")
 
   "
   query A($atOtherHomes: Boolean) {
@@ -29,14 +21,11 @@ test_that("5.7.1 - Variable Uniqueness", {
     }
   }
   " %>%
-  expect_r6()
-
+    expect_r6()
 })
 
 
-
 test_that("5.7.2 - Default Values Are Correctly Typed", {
-
   "
   query houseTrainedQuery($atOtherHomes: Boolean = true) {
     dog {
@@ -44,8 +33,7 @@ test_that("5.7.2 - Default Values Are Correctly Typed", {
     }
   }
   " %>%
-  expect_r6()
-
+    expect_r6()
 
   "
   query houseTrainedQuery($atOtherHomes: Boolean! = true) {
@@ -54,8 +42,7 @@ test_that("5.7.2 - Default Values Are Correctly Typed", {
     }
   }
   " %>%
-  expect_err("Non-Null Variables are not allowed to have default values")
-
+    expect_err("Non-Null Variables are not allowed to have default values")
 
   "
   query houseTrainedQuery($atOtherHomes: Boolean = \"true\") {
@@ -64,8 +51,7 @@ test_that("5.7.2 - Default Values Are Correctly Typed", {
     }
   }
   " %>%
-  expect_err("found StringValue")
-
+    expect_err("found StringValue")
 
   "
   query intToFloatQuery($floatVar: Float = 1) {
@@ -74,15 +60,11 @@ test_that("5.7.2 - Default Values Are Correctly Typed", {
     }
   }
   " %>%
-  expect_r6()
-
+    expect_r6()
 })
 
 
-
-
 test_that("5.7.3 - Variables are Input Types", {
-
   "
   query takesBoolean($atOtherHomes: Boolean) {
     dog {
@@ -98,41 +80,36 @@ test_that("5.7.3 - Variables are Input Types", {
     booleanList(booleanListArg: $booleans)
   }
   " %>%
-  expect_r6()
-
+    expect_r6()
 
   "
   query takesCat($cat: Cat) {
     dog { name }
   }
   " %>%
-  expect_err("Can not find matching")
+    expect_err("Can not find matching")
   "
   query takesDogBang($dog: Dog!) {
     dog { name }
   }
   " %>%
-  expect_err("Can not find matching")
+    expect_err("Can not find matching")
   "
   query takesListOfPet($pets: [Pet]) {
     dog { name }
   }
   " %>%
-  expect_err("Can not find matching")
+    expect_err("Can not find matching")
   "
   query takesCatOrDog($catOrDog: CatOrDog) {
     dog { name }
   }
   " %>%
-  expect_err("Can not find matching")
-
-
-
+    expect_err("Can not find matching")
 })
 
 
 test_that("5.7.4 - All Variable Uses Defined", {
-
   "
   query variableIsDefined($atOtherHomes: Boolean) {
     dog {
@@ -140,8 +117,7 @@ test_that("5.7.4 - All Variable Uses Defined", {
     }
   }
   " %>%
-  expect_r6()
-
+    expect_r6()
 
   "
   query variableIsNotDefined {
@@ -150,8 +126,7 @@ test_that("5.7.4 - All Variable Uses Defined", {
     }
   }
   " %>%
-  expect_err("variable definition can not be found")
-
+    expect_err("variable definition can not be found")
 
   "
   query variableIsDefinedUsedInSingleFragment($atOtherHomes: Boolean) {
@@ -163,8 +138,7 @@ test_that("5.7.4 - All Variable Uses Defined", {
     isHousetrained(atOtherHomes: $atOtherHomes)
   }
   " %>%
-  expect_r6()
-
+    expect_r6()
 
   "
   query variableIsNotDefinedUsedInSingleFragment {
@@ -176,9 +150,7 @@ test_that("5.7.4 - All Variable Uses Defined", {
     isHousetrained(atOtherHomes: $atOtherHomes)
   }
   " %>%
-  expect_err("variable definition can not be found")
-
-
+    expect_err("variable definition can not be found")
 
   "
   query variableIsNotDefinedUsedInNestedFragment {
@@ -193,7 +165,7 @@ test_that("5.7.4 - All Variable Uses Defined", {
     isHousetrained(atOtherHomes: $atOtherHomes)
   }
   " %>%
-  expect_err("variable definition can not be found")
+    expect_err("variable definition can not be found")
 
   "
   query housetrainedQueryOne($atOtherHomes: Boolean) {
@@ -210,8 +182,7 @@ test_that("5.7.4 - All Variable Uses Defined", {
     isHousetrained(atOtherHomes: $atOtherHomes)
   }
   " %>%
-  expect_r6()
-
+    expect_r6()
 
   "
   query housetrainedQueryOne($atOtherHomes: Boolean) {
@@ -228,14 +199,11 @@ test_that("5.7.4 - All Variable Uses Defined", {
     isHousetrained(atOtherHomes: $atOtherHomes)
   }
   " %>%
-  expect_err("variable definition can not be found")
-
+    expect_err("variable definition can not be found")
 })
 
 
-
 test_that("5.7.5 - All Variables Used", {
-
   "
   query variableUsedInFragment($atOtherHomes: Boolean) {
     dog {
@@ -246,8 +214,7 @@ test_that("5.7.5 - All Variables Used", {
     isHousetrained(atOtherHomes: $atOtherHomes)
   }
   " %>%
-  expect_r6()
-
+    expect_r6()
 
   "
   query variableUnused($atOtherHomes: Boolean) {
@@ -256,8 +223,7 @@ test_that("5.7.5 - All Variables Used", {
     }
   }
   " %>%
-  expect_err("Unused variables")
-
+    expect_err("Unused variables")
 
   "
   query variableNotUsedWithinFragment($atOtherHomes: Boolean) {
@@ -269,8 +235,7 @@ test_that("5.7.5 - All Variables Used", {
     isHousetrained
   }
   " %>%
-  expect_err("Unused variables")
-
+    expect_err("Unused variables")
 
   "
   query queryWithUsedVar($atOtherHomes: Boolean) {
@@ -287,14 +252,11 @@ test_that("5.7.5 - All Variables Used", {
     isHousetrained(atOtherHomes: $atOtherHomes)
   }
   " %>%
-  expect_err("Unused variables")
-
+    expect_err("Unused variables")
 })
 
 
-
 test_that("5.7.6 - All Variables Usages are Allowed", {
-
   "
   query intCannotGoIntoBoolean($intArg: Int) {
     arguments {
@@ -302,8 +264,7 @@ test_that("5.7.6 - All Variables Usages are Allowed", {
     }
   }
   " %>%
-  expect_err("inner types do not match")
-
+    expect_err("inner types do not match")
 
   "
   query booleanListCannotGoIntoBoolean($booleanListArg: [Boolean]) {
@@ -312,8 +273,7 @@ test_that("5.7.6 - All Variables Usages are Allowed", {
     }
   }
   " %>%
-  expect_err("Variable list dimensions")
-
+    expect_err("Variable list dimensions")
 
   "
   query booleanArgQuery($booleanArg: Boolean) {
@@ -322,7 +282,7 @@ test_that("5.7.6 - All Variables Usages are Allowed", {
     }
   }
   " %>%
-  expect_err("nullible argument to a non-nullible")
+    expect_err("nullible argument to a non-nullible")
 
   "
   query booleanArgQueryWithDefault($booleanArg: Boolean = true) {
@@ -331,7 +291,7 @@ test_that("5.7.6 - All Variables Usages are Allowed", {
     }
   }
   " %>%
-  expect_r6()
+    expect_r6()
 
   "
   query nonNullListToList($nonNullBooleanList: [Boolean!]) {
@@ -345,8 +305,7 @@ test_that("5.7.6 - All Variables Usages are Allowed", {
     }
   }
   " %>%
-  expect_r6()
-
+    expect_r6()
 
   "
   query listToNonNullList($booleanList: [Boolean]) {
@@ -355,7 +314,7 @@ test_that("5.7.6 - All Variables Usages are Allowed", {
     }
   }
   " %>%
-  expect_err("nullible argument to a non-nullible definition")
+    expect_err("nullible argument to a non-nullible definition")
 
   "
   query listToNonNullList($booleanList: [Boolean]) {
@@ -364,6 +323,5 @@ test_that("5.7.6 - All Variables Usages are Allowed", {
     }
   }
   " %>%
-  expect_err("nullible argument to a non-nullible definition")
-
+    expect_err("nullible argument to a non-nullible definition")
 })

@@ -1,16 +1,5 @@
 # load_all(); testthat::test_file(file.path("tests", "testthat", "test-kitchen.R")); # nolint
 
-context("kitchen")
-
-expect_str <- function(x, structure_txt, all_fields = FALSE) {
-  txt <- format_str(x, all_fields = all_fields)
-  lines <- strsplit(txt, "\n")[[1]]
-  testthat::expect_equal(
-    lines,
-    strsplit(structure_txt, "\n")[[1]]
-  )
-}
-
 txt_to_obj <- function(txt, ...) {
   suppressWarnings(graphql2obj(txt, ...))
 }
@@ -29,7 +18,6 @@ read_kitchen <- function(file_name) {
 }
 
 test_that("formatting", {
-
   schema_txt <- read_kitchen("schema-kitchen-sink.graphql")
   schema_clean_txt <- read_kitchen("schema-kitchen-sink-clean.graphql")
 
@@ -39,7 +27,6 @@ test_that("formatting", {
   # even with comments and different commas sep'ing the fields
   expect_format(schema_txt, schema_clean_txt, parse_schema = TRUE)
 
-
   request_txt <- read_kitchen("request-kitchen-sink.graphql")
   request_clean_txt <- read_kitchen("request-kitchen-sink-clean.graphql")
 
@@ -48,21 +35,32 @@ test_that("formatting", {
 
   # even with comments and different commas sep'ing the fields
   expect_format(request_txt, request_clean_txt)
-
 })
 
 test_that("structure", {
-
-  schema <- read_kitchen("schema-kitchen-sink.graphql") %>% txt_to_obj(parse_schema = TRUE)
+  schema <- read_kitchen("schema-kitchen-sink.graphql") %>%
+    txt_to_obj(parse_schema = TRUE)
 
   # expect structure output to match
-  expect_str(schema, read_kitchen("schema-kitchen-sink-str.txt"))
-  expect_str(schema, read_kitchen("schema-kitchen-sink-str-all.txt"), all_fields = TRUE)
-
+  expect_str <- function(s, file, all_fields) {
+    tmpfile <- tempfile(fileext = ".txt")
+    on.exit(
+      {
+        unlink(tmpfile)
+      },
+      add = TRUE
+    ) # nolint
+    write(format_str(s, all_fields = all_fields), tmpfile)
+    testthat::expect_snapshot_file(
+      tmpfile,
+      name = file,
+      compare = testthat::compare_file_text
+    )
+  }
+  expect_str(schema, "schema-str.txt", all_fields = FALSE)
+  expect_str(schema, "schema-str-all.txt", all_fields = TRUE)
 
   request_obj <- read_kitchen("request-kitchen-sink.graphql") %>% txt_to_obj()
-
-  # expect structure output to match
-  expect_str(request_obj, read_kitchen("request-kitchen-sink-str.txt"))
-  expect_str(request_obj, read_kitchen("request-kitchen-sink-str-all.txt"), all_fields = TRUE)
+  expect_str(request_obj, "request-str.txt", all_fields = FALSE)
+  expect_str(request_obj, "request-str-all.txt", all_fields = TRUE)
 })

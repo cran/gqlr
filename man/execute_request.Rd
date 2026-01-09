@@ -7,30 +7,36 @@
 execute_request(
   request,
   schema,
+  ...,
   operation_name = NULL,
   variables = list(),
-  initial_value = NULL
+  initial_value = NULL,
+  verbose_errors = is_interactive()
 )
 }
 \arguments{
 \item{request}{a valid GraphQL string}
 
 \item{schema}{a character string (to be used along side \code{initial_value})
-or a schema object created from \code{\link{gqlr_schema}}}
+or a schema object created from \code{\link[=gqlr_schema]{gqlr_schema()}}}
+
+\item{...}{ignored for paramter expansion}
 
 \item{operation_name}{name of request operation to execute. If not value is
 provided it will use the operation in the request string. If more than one
 operations exist, an error will be produced.  See
-\url{https://graphql.github.io/graphql-spec/October2016/#GetOperation()}}
+\url{https://spec.graphql.org/October2016/#GetOperation()}}
 
 \item{variables}{a named list containing variable values.
-\url{https://graphql.github.io/graphql-spec/October2016/#sec-Language.Variables}}
+\url{https://spec.graphql.org/October2016/#sec-Language.Variables}}
 
 \item{initial_value}{default value for executing requests.  This value can
 either be provided and/or combined with the resolve method of the query
 root type or mutation root type.  The value provided should be a named list
 of the field name (key) and a value matching that field name type.  The
 value may be a function that returns a value of the field name type.}
+
+\item{verbose_errors}{logical to determine if error-like messages should be displayed when processing a request that finds unknown structures. Be default, this is only enabled when \code{verbose_errors = rlang::is_interactive()} is \code{TRUE}.}
 }
 \description{
 Executes a GraphQL server request with the provided request.
@@ -129,5 +135,5 @@ execute_request("
 }
 }
 \references{
-\url{https://graphql.github.io/graphql-spec/October2016/#sec-Execution}
+\url{https://spec.graphql.org/October2016/#sec-Execution}
 }

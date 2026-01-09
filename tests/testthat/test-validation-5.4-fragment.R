@@ -1,12 +1,6 @@
 # load_all(); testthat::test_file(file.path("tests", "testthat", "test-validation-5.4-fragment.R")) # nolint
 
-context("validation-5.4-fragment")
-
-source(testthat::test_path("validate_helper.R"))
-
 test_that("5.4.1.1 - Fragment Name Uniqueness", {
-
-
   # "
   # {
   #   dog {
@@ -38,7 +32,7 @@ test_that("5.4.1.1 - Fragment Name Uniqueness", {
     }
   }
   " %>%
-  expect_r6()
+    expect_r6()
 
   "
   {
@@ -55,15 +49,11 @@ test_that("5.4.1.1 - Fragment Name Uniqueness", {
     }
   }
   " %>%
-  expect_err("Found duplicate fragment: fragmentOne")
-
-
-  })
+    expect_err("Found duplicate fragment: fragmentOne")
+})
 
 
 test_that("5.4.1.2 - Fragment Spread Type Existence", {
-
-
   "
   {
     dog {
@@ -86,8 +76,7 @@ test_that("5.4.1.2 - Fragment Spread Type Existence", {
     }
   }
   " %>%
-  expect_r6()
-
+    expect_r6()
 
   "
   {
@@ -99,14 +88,11 @@ test_that("5.4.1.2 - Fragment Spread Type Existence", {
     name
   }
   " %>%
-  expect_err("Can not find match for typeCondition")
-
+    expect_err("Can not find match for typeCondition")
 })
 
 
-
 test_that("5.4.1.3 - Fragments On Composite Types", {
-
   "
   {
     dog {
@@ -127,13 +113,11 @@ test_that("5.4.1.3 - Fragments On Composite Types", {
     }
   }
   " %>%
-  expect_r6()
-
+    expect_r6()
 })
 
 
 test_that("5.4.1.4 - Fragments Must Be Used", {
-
   "
   fragment nameFragment on Dog { # unused
     name
@@ -144,15 +128,11 @@ test_that("5.4.1.4 - Fragments Must Be Used", {
     }
   }
   " %>%
-  expect_err("all fragments must be used")
-
-
+    expect_err("all fragments must be used")
 })
 
 
-
 test_that("5.4.2.1 - Fragment spread target defined", {
-
   "
   {
     dog {
@@ -160,14 +140,11 @@ test_that("5.4.2.1 - Fragment spread target defined", {
     }
   }
   " %>%
-  expect_err("Can not find fragment named")
+    expect_err("Can not find fragment named")
 })
 
 
-
 test_that("5.4.2.2 - Fragment spreads must not form cycles", {
-
-
   "
   {
     dog {
@@ -185,9 +162,7 @@ test_that("5.4.2.2 - Fragment spreads must not form cycles", {
     ...nameFragment
   }
   " %>%
-  expect_err("fragments can not be circularly defined")
-
-
+    expect_err("fragments can not be circularly defined")
 
   "
   {
@@ -210,14 +185,11 @@ test_that("5.4.2.2 - Fragment spreads must not form cycles", {
     }
   }
   " %>%
-  expect_err("fragments can not be circularly defined")
-
+    expect_err("fragments can not be circularly defined")
 })
 
 
-
 test_that("5.4.2.3.1 - Object Spreads In Object Scope", {
-
   "
   {
     dog {
@@ -230,7 +202,7 @@ test_that("5.4.2.3.1 - Object Spreads In Object Scope", {
     }
   }
   " %>%
-  expect_r6()
+    expect_r6()
 
   "
   {
@@ -244,14 +216,11 @@ test_that("5.4.2.3.1 - Object Spreads In Object Scope", {
     }
   }
   " %>%
-  expect_err("must be an intersection")
-
+    expect_err("must be an intersection")
 })
 
 
-
 test_that("5.4.2.3.2 - Abstract Spreads In Object Scope", {
-
   "
   {
     dog {
@@ -265,8 +234,7 @@ test_that("5.4.2.3.2 - Abstract Spreads In Object Scope", {
     ...petNameFragment
   }
   " %>%
-  expect_r6()
-
+    expect_r6()
 
   "
   {
@@ -283,13 +251,11 @@ test_that("5.4.2.3.2 - Abstract Spreads In Object Scope", {
     ...catOrDogNameFragment
   }
   " %>%
-  expect_r6()
-
+    expect_r6()
 })
 
 
 test_that("5.4.2.3.3 - Object Spreads In Abstract Scope", {
-
   "
   {
     dog {
@@ -309,8 +275,7 @@ test_that("5.4.2.3.3 - Object Spreads In Abstract Scope", {
     }
   }
   " %>%
-  expect_r6()
-
+    expect_r6()
 
   "
   {
@@ -326,7 +291,7 @@ test_that("5.4.2.3.3 - Object Spreads In Abstract Scope", {
     }
   }
   " %>%
-  expect_err("must be an intersection")
+    expect_err("must be an intersection")
 
   "
   {
@@ -342,13 +307,11 @@ test_that("5.4.2.3.3 - Object Spreads In Abstract Scope", {
     }
   }
   " %>%
-  expect_err("must be an intersection")
-
+    expect_err("must be an intersection")
 })
 
 
 test_that("5.4.2.3.4 - Abstract Spreads In Abstract Scope", {
-
   "
   {
     dog {
@@ -364,8 +327,7 @@ test_that("5.4.2.3.4 - Abstract Spreads In Abstract Scope", {
     }
   }
   " %>%
-  expect_r6()
-
+    expect_r6()
 
   "
   {
@@ -380,6 +342,5 @@ test_that("5.4.2.3.4 - Abstract Spreads In Abstract Scope", {
     name
   }
   " %>%
-  expect_err("must be an intersection")
-
+    expect_err("must be an intersection")
 })

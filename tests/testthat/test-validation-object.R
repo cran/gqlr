@@ -1,19 +1,18 @@
 # load_all(); testthat::test_file(file.path("tests", "testthat", "test-validation-object.R")); # nolint
 
-context("object validation")
-
-source(testthat::test_path("validate_helper.R"))
-
 expect_validate_err <- function(schema, ..., txt = schema) {
   schema %>%
-    gqlr:::ObjectHelpers$new(source = txt) ->
-  oh
+    gqlr:::ObjectHelpers$new(
+      source = txt,
+      error_list = ErrorList$new(verbose = FALSE)
+    ) -> oh
 
   validate_schema(oh = oh)
 
   testthat::expect_true(oh$error_list$has_any_errors())
 
-  expect_error({
+  expect_error(
+    {
       stop(format(oh$error_list))
     },
     ...
@@ -25,9 +24,6 @@ test_that("validate schema", {
   validate_schema(oh = oh)
 
   expect_true(oh$error_list$has_no_errors())
-
-
-
 
   # double field name
   "
@@ -91,7 +87,6 @@ test_that("validate schema", {
   " %>%
     expect_validate_err("must input the same type")
 
-
   "
   scalar MyScalar
   type MyObject {
@@ -119,6 +114,4 @@ test_that("validate schema", {
 
   schema %>%
     expect_validate_err(txt = schema_txt, "must have at least one field")
-
-
 })

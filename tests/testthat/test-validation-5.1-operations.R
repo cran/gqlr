@@ -1,14 +1,6 @@
 # load_all(); testthat::test_file(file.path("tests", "testthat", "test-validation-5.1-operations.R")) # nolint
 
-
-context("validation-5.1-operations")
-
-
-source(testthat::test_path("validate_helper.R"))
-
-
 test_that("5.1.1.1 - Operation Name Uniqueness", {
-
   "
   query getDogName {
     dog {
@@ -23,7 +15,7 @@ test_that("5.1.1.1 - Operation Name Uniqueness", {
     }
   }
   " %>%
-  expect_r6()
+    expect_r6()
 
   "
   query getName {
@@ -39,7 +31,7 @@ test_that("5.1.1.1 - Operation Name Uniqueness", {
     }
   }
   " %>%
-  expect_err("has duplicate request name: getName")
+    expect_err("has duplicate request name: getName")
 
   "
   query dogOperation {
@@ -53,16 +45,11 @@ test_that("5.1.1.1 - Operation Name Uniqueness", {
     }
   }
   " %>%
-  expect_err("has duplicate request name: dogOperation")
-
-
-});
-
-
+    expect_err("has duplicate request name: dogOperation")
+})
 
 
 test_that("5.1.2.1 - Lone Anonymous Operation", {
-
   "
   {
     dog {
@@ -70,7 +57,7 @@ test_that("5.1.2.1 - Lone Anonymous Operation", {
     }
   }
   " %>%
-  expect_r6()
+    expect_r6()
 
   "
   {
@@ -86,14 +73,13 @@ test_that("5.1.2.1 - Lone Anonymous Operation", {
     }
   }
   " %>%
-  expect_err("has an anonymous and defined definition")
-
-
+    expect_err("has an anonymous and defined definition")
 
   # Causes parser error
   # missing fragment name
   expect_graphql_error <- function(query, ...) {
-    expect_error({
+    expect_error(
+      {
         graphql2obj(query)
       },
       class = "error",
@@ -110,6 +96,5 @@ test_that("5.1.2.1 - Lone Anonymous Operation", {
     }
   }
   " %>%
-  expect_graphql_error("syntax error")
-
-});
+    expect_graphql_error("syntax error")
+})

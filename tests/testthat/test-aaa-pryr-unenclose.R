@@ -1,8 +1,3 @@
-
-
-context("pryr unenclose")
-
-
 test_that("lapply works", {
   # works as expected
   run2 <- function() {
@@ -13,7 +8,7 @@ test_that("lapply works", {
       my_fn <- function() {
         myItem
       }
-      my_fn <- pryr::unenclose(my_fn)
+      my_fn <- unenclose(my_fn)
       environment(my_fn) <- globalenv()
       my_fn
     })
@@ -28,9 +23,7 @@ test_that("lapply works", {
   expect_true(ans$A() == "A")
   expect_true(ans$B() == "B")
   expect_true(ans$C() == "C")
-
 })
-
 
 
 test_that("pryr_unenclose works", {
@@ -54,8 +47,6 @@ test_that("pryr_unenclose works", {
   expect_true(ans$B() == "B")
   expect_true(ans$C() == "C")
 
-
-
   ans <- (function() {
     ret_fn <- function(item) {
       function() {
@@ -71,6 +62,4 @@ test_that("pryr_unenclose works", {
   expect_true(ans$A() == "A")
   expect_true(ans$B() == "B")
   expect_true(ans$C() == "C")
-
-
 })

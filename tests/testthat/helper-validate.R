@@ -1,34 +1,29 @@
-source(testthat::test_path("dog_cat_schema.R"))
-
-
-to_json <- gqlr:::to_json
-from_json <- gqlr:::from_json
-str_trim <- gqlr:::str_trim
-str_c <- gqlr:::str_c
-collapse <- gqlr:::collapse
-
-
-
 expect_r6 <- function(query, ..., schema = dog_cat_schema) {
-
-  oh <- gqlr:::ObjectHelpers$new(schema, source = query)
+  oh <- ObjectHelpers$new(schema, source = query)
   oh$error_list$source <- query
-  ans <- gqlr:::validate_document(query, oh = oh)
+  ans <- validate_document(query, oh = oh)
 
-  testthat::expect_equal(gqlr:::format.ErrorList(oh$error_list), "<ErrorList> No errors")
+  testthat::expect_equal(
+    format.ErrorList(oh$error_list),
+    "<ErrorList> No errors"
+  )
 
   testthat::expect_true(R6::is.R6(ans), ...)
 }
 
 expect_err <- function(query, ..., schema = dog_cat_schema) {
-
-  oh <- gqlr:::ObjectHelpers$new(schema, source = query)
-  ans <- gqlr:::validate_document(query, oh = oh) # nolint
+  oh <- ObjectHelpers$new(
+    schema,
+    source = query,
+    error_list = ErrorList$new(verbose = FALSE)
+  )
+  ans <- validate_document(query, oh = oh) # nolint
 
   testthat::expect_true(oh$error_list$has_any_errors())
 
-  testthat::expect_error({
-      stop(gqlr:::format.ErrorList(oh$error_list))
+  testthat::expect_error(
+    {
+      stop(format.ErrorList(oh$error_list))
     },
     ...
   )
@@ -70,7 +65,6 @@ expect_request <- function(
 }
 
 
-
 expect_request_err <- function(
   query_txt,
   expected_json,
@@ -84,7 +78,8 @@ expect_request_err <- function(
     query_txt,
     schema,
     operation_name = operation_name,
-    variables = variables
+    variables = variables,
+    verbose_errors = FALSE
   )
 
   testthat::expect_true(ans$error_list$has_any_errors())
@@ -106,28 +101,12 @@ expect_request_err <- function(
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 expect_subset <- function(bigger, smaller, verbose = TRUE) {
   ans <- sub_rec(bigger, smaller, verbose = verbose) # nolint
   testthat::expect_true(ans)
 }
 
 sub_rec <- function(bigger, smaller, key = NULL, verbose = FALSE) {
-
   show_error <- function(..., item = NULL, key_val = key) {
     if (verbose) {
       if (missing(item)) {
@@ -184,20 +163,28 @@ sub_rec <- function(bigger, smaller, key = NULL, verbose = FALSE) {
         return(show_error("subset list has names where names are not provided"))
       }
       for (name in names(smaller)) {
-        item_ans <- sub_rec(bigger[[name]], smaller[[name]], str_c(key, "$", name), verbose)
+        item_ans <- sub_rec(
+          bigger[[name]],
+          smaller[[name]],
+          str_c(key, "$", name),
+          verbose
+        )
         if (!item_ans) {
           return(FALSE)
         }
       }
       return(TRUE)
-
     } else {
       # is array
       if (length(bigger) != length(smaller)) {
         return(
           show_error(
-            "subset list (", length(smaller), ")",
-            " is not same length as expected list (", length(bigger), ")"
+            "subset list (",
+            length(smaller),
+            ")",
+            " is not same length as expected list (",
+            length(bigger),
+            ")"
           )
         )
       }
@@ -214,12 +201,15 @@ sub_rec <- function(bigger, smaller, key = NULL, verbose = FALSE) {
           verbose = verbose
         )
         if (!item_ans) {
-          return(show_error("could not find list item", item = smaller_item, key_val = new_key))
+          return(show_error(
+            "could not find list item",
+            item = smaller_item,
+            key_val = new_key
+          ))
         }
       }
       return(TRUE)
     }
-
   }
 
   show_error("this should not be reached")

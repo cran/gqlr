@@ -1,12 +1,6 @@
 # load_all(); testthat::test_file(file.path("tests", "testthat", "test-validation-5.5-values.R")); # nolint
 
-context("validation-5.5-values")
-
-
-source(testthat::test_path("validate_helper.R"))
-
 test_that("5.5.1 - Input Object Field Uniqueness", {
-
   "
   schema {
     query: SearchRoot
@@ -17,22 +11,19 @@ test_that("5.5.1 - Input Object Field Uniqueness", {
   type SearchRoot {
     field(arg: SingleArgInput): Int
   }
-  " ->
-  schema_txt
-
+  " -> schema_txt
 
   "
   {
     field(arg: { arg: true })
   }
   " %>%
-  expect_r6(schema = schema_txt)
+    expect_r6(schema = schema_txt)
 
   "
   {
     field(arg: { arg: true, arg: false })
   }
   " %>%
-  expect_err("must have unique field names", schema = schema_txt)
-
+    expect_err("must have unique field names", schema = schema_txt)
 })
